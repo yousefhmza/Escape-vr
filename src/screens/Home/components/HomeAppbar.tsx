@@ -1,6 +1,6 @@
 import React from 'react';
 import COLORS from '../../../values/colors';
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from 'react-native-vector-icons/Ionicons';
 import {Animated, Text, StyleSheet, ImageBackground, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
@@ -8,6 +8,7 @@ import {
   disableExpoTranslucentStatusBar,
   useCollapsibleHeader,
 } from 'react-navigation-collapsible';
+import {rsHeight, rsSize, rsWidth} from '../../../utils/responsive';
 
 disableExpoTranslucentStatusBar();
 
@@ -16,27 +17,27 @@ type props = {
 };
 
 const HomeAppbar = ({animatedHeaderValue}: props) => {
-  const {onScroll, containerPaddingTop, scrollIndicatorInsetTop} =
-    useCollapsibleHeader({
-      navigationOptions: {
-        headerStyle: {
-          height: 250,
-        },
-        headerBackground: (
-          <Image
-            source={{
-              uri: 'https://artwork.wallartprints.com/media/catalog/category/mountain-pictures.jpg',
-            }}
-            style={{flex: 1}}
-          />
-        ),
-      },
-      config: {collapsedColor: 'red'},
-    });
+  // const {onScroll, containerPaddingTop, scrollIndicatorInsetTop} =
+  //   useCollapsibleHeader({
+  //     navigationOptions: {
+  //       headerStyle: {
+  //         height: 250,
+  //       },
+  //       headerBackground: (
+  //         <Image
+  //           source={{
+  //             uri: 'https://artwork.wallartprints.com/media/catalog/category/mountain-pictures.jpg',
+  //           }}
+  //           style={{flex: 1}}
+  //         />
+  //       ),
+  //     },
+  //     config: {collapsedColor: 'red'},
+  //   });
 
   const navigation = useNavigation();
-  const headerMaxHeight = 200;
-  const headerMinHeight = 72;
+  const headerMaxHeight = rsHeight(240);
+  const headerMinHeight = rsHeight(72);
 
   const animatedHeaderBGColor = animatedHeaderValue.interpolate({
     inputRange: [0, headerMaxHeight - headerMinHeight],
@@ -45,7 +46,7 @@ const HomeAppbar = ({animatedHeaderValue}: props) => {
   });
 
   const animatedHeaderHeight = animatedHeaderValue.interpolate({
-    inputRange: [0, 200],
+    inputRange: [0, headerMaxHeight],
     outputRange: [headerMaxHeight, headerMinHeight],
     extrapolate: 'clamp',
   });
@@ -74,22 +75,13 @@ const HomeAppbar = ({animatedHeaderValue}: props) => {
         <Icon
           name="menu"
           color={COLORS.white}
-          size={28}
+          size={rsSize(28)}
           style={styles.drawerIcon}
           onPress={() => {
             navigation.dispatch(DrawerActions.openDrawer());
           }}
         />
       </ImageBackground>
-
-      {/* <Animated.Image
-        style={styles.image}
-        source={{
-          uri: "https://www.fay3.com/previews/2019-12/Ga6OBkb0AD.jpeg",
-          height: animatedHeaderHeight,
-
-        }}
-      /> */}
     </Animated.View>
   );
 };
@@ -110,15 +102,16 @@ const styles = StyleSheet.create({
   textStyle: {
     color: COLORS.white,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: rsSize(20),
+    fontWeight: '600',
     position: 'absolute',
     end: 0,
     start: 0,
-    bottom: 24,
+    bottom: rsHeight(24),
   },
   drawerIcon: {
     position: 'absolute',
-    start: 16,
-    top: 40,
+    start: rsWidth(16),
+    top: rsHeight(40),
   },
 });

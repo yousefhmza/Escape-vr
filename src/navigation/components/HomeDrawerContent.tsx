@@ -3,10 +3,12 @@ import {
   DrawerContentScrollView,
   DrawerItem,
   DrawerItemList,
-} from "@react-navigation/drawer";
-import COLORS from "../../values/colors";
-import DrawerIcon from "../../components/atoms/DrawerIcon";
-import DrawerHeader from "./DrawerHeader";
+} from '@react-navigation/drawer';
+import COLORS from '../../values/colors';
+import DrawerIcon from '../../components/atoms/DrawerIcon';
+import DrawerHeader from './DrawerHeader';
+import {launch} from '../../services/outsource_services';
+import {links} from '../../utils/constants';
 
 const HomeDrawerContent = (props: DrawerContentComponentProps) => {
   return (
@@ -15,32 +17,32 @@ const HomeDrawerContent = (props: DrawerContentComponentProps) => {
       <DrawerItemList {...props} />
       <DrawerItem
         label="Our location"
-        onPress={() => {}}
-        icon={(props) => <DrawerIcon name="location" {...props} />}
+        onPress={() => launch(links.locationUrl)}
+        icon={props => <DrawerIcon name="location" {...props} />}
         inactiveTintColor={COLORS.white}
       />
       <DrawerItem
         label="Call us"
-        onPress={() => {}}
-        icon={(props) => <DrawerIcon name="call" {...props} />}
+        onPress={() => launch(links.contactPhoneUrl)}
+        icon={props => <DrawerIcon name="call" {...props} />}
         inactiveTintColor={COLORS.white}
       />
       <DrawerItem
         label="Share our app"
-        onPress={() => {}}
-        icon={(props) => <DrawerIcon name="share-social" {...props} />}
+        onPress={() => launch(links.googlePlayUrl)}
+        icon={props => <DrawerIcon name="share-social" {...props} />}
         inactiveTintColor={COLORS.white}
       />
       <DrawerItem
         label="Rate our app"
-        onPress={() => {}}
-        icon={(props) => <DrawerIcon name="star" {...props} />}
+        onPress={() => launch(links.googlePlayUrl)}
+        icon={props => <DrawerIcon name="star" {...props} />}
         inactiveTintColor={COLORS.white}
       />
       <DrawerItem
         label="Logout"
         onPress={() => {}}
-        icon={(props) => <DrawerIcon name="log-out" {...props} />}
+        icon={props => <DrawerIcon name="log-out" {...props} />}
         inactiveTintColor={COLORS.white}
       />
     </DrawerContentScrollView>
