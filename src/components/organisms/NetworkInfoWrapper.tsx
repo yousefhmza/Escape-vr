@@ -1,19 +1,19 @@
-import { addEventListener } from "@react-native-community/netinfo";
-import { ReactNode, useState } from "react";
-import { Snackbar } from "react-native-paper";
-import { useEffect } from "react";
-import { StyleSheet } from "react-native";
-import COLORS from "../../values/colors";
+import {addEventListener} from '@react-native-community/netinfo';
+import {ReactNode, useState} from 'react';
+import {Snackbar} from 'react-native-paper';
+import {useEffect} from 'react';
+import {StyleSheet} from 'react-native';
+import COLORS from '../../values/colors';
 
 type props = {
   children: ReactNode;
 };
 
-const NetworkInfoWrapper = ({ children }: props) => {
+const NetworkInfoWrapper = ({children}: props) => {
   const [isSnackbarShown, setIsSnackBarShown] = useState<boolean>(false);
 
   useEffect(() => {
-    addEventListener((state) => {
+    addEventListener(state => {
       !state.isConnected ? setIsSnackBarShown(true) : setIsSnackBarShown(false);
     });
   }, []);
@@ -23,8 +23,8 @@ const NetworkInfoWrapper = ({ children }: props) => {
       <Snackbar
         style={styles.snackbar}
         visible={isSnackbarShown}
-        onDismiss={() => setIsSnackBarShown(false)}
-      >
+        duration={2000000}
+        onDismiss={() => setIsSnackBarShown(false)}>
         Not connected to internet !!
       </Snackbar>
       {children}
@@ -35,5 +35,5 @@ const NetworkInfoWrapper = ({ children }: props) => {
 export default NetworkInfoWrapper;
 
 const styles = StyleSheet.create({
-  snackbar: { backgroundColor: COLORS.primary },
+  snackbar: {backgroundColor: COLORS.red},
 });

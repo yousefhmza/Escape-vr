@@ -1,12 +1,15 @@
-import { NavigationContainer } from "@react-navigation/native";
-import NetworkInfoWrapper from "../components/organisms/NetworkInfoWrapper";
-import AppStack from "./navigators/AppStack";
+import {NavigationContainer} from '@react-navigation/native';
+import NetworkInfoWrapper from '../components/organisms/NetworkInfoWrapper';
+import AuthContextProvider from '../stores/auth/auth-context';
+import AppStack from './navigators/AppStack';
 
 const Navigation = () => {
   return (
     <NavigationContainer>
       <NetworkInfoWrapper>
-        <AppStack />
+        <AuthContextProvider>
+          <AppStack />
+        </AuthContextProvider>
       </NetworkInfoWrapper>
     </NavigationContainer>
   );

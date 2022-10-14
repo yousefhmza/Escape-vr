@@ -7,10 +7,20 @@ import {
 import COLORS from '../../values/colors';
 import DrawerIcon from '../../components/atoms/DrawerIcon';
 import DrawerHeader from './DrawerHeader';
-import {launch} from '../../services/outsource_services';
+import {launch, share} from '../../services/outsource-services';
 import {links} from '../../utils/constants';
+import {useContext} from 'react';
+import {AuthContext} from '../../stores/auth/auth-context';
+import {signout} from '../../services/firebase-services';
 
 const HomeDrawerContent = (props: DrawerContentComponentProps) => {
+  const authContext = useContext(AuthContext);
+  const authSignOut = () => {
+    signout().then(() => {
+      authContext.setUser(null);
+    });
+  };
+
   return (
     <DrawerContentScrollView>
       <DrawerHeader />
@@ -29,7 +39,7 @@ const HomeDrawerContent = (props: DrawerContentComponentProps) => {
       />
       <DrawerItem
         label="Share our app"
-        onPress={() => launch(links.googlePlayUrl)}
+        onPress={() => share(links.googlePlayUrl)}
         icon={props => <DrawerIcon name="share-social" {...props} />}
         inactiveTintColor={COLORS.white}
       />
@@ -39,12 +49,14 @@ const HomeDrawerContent = (props: DrawerContentComponentProps) => {
         icon={props => <DrawerIcon name="star" {...props} />}
         inactiveTintColor={COLORS.white}
       />
-      <DrawerItem
-        label="Logout"
-        onPress={() => {}}
-        icon={props => <DrawerIcon name="log-out" {...props} />}
-        inactiveTintColor={COLORS.white}
-      />
+      {authContext.user && (
+        <DrawerItem
+          label="Logout"
+          onPress={authSignOut}
+          icon={props => <DrawerIcon name="log-out" {...props} />}
+          inactiveTintColor={COLORS.white}
+        />
+      )}
     </DrawerContentScrollView>
   );
 };

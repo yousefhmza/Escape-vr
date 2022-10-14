@@ -1,44 +1,63 @@
-import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import COLORS from '../../values/colors';
+import {useContext, useState} from 'react';
+import {StyleSheet, Text, View, Image, ActivityIndicator} from 'react-native';
 import {VerticalSpace} from '../../components/atoms/Spaces';
 import {rsHeight, rsRadius, rsSize, rsWidth} from '../../utils/responsive';
-import COLORS from '../../values/colors';
+import {googleSignin} from '../../services/firebase-services';
+import {Snackbar} from 'react-native-paper';
+import {AuthContext} from '../../stores/auth/auth-context';
+import GoogleButton from '../../components/molecules/GoogleButton';
+import FacebookButton from '../../components/molecules/FacebookButton';
 
-import auth from '@react-native-firebase/auth';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+const initialState = {isLaoding: false, error: null};
 
 const DrawerHeader = () => {
-  const googleSignin = async () => {
-    GoogleSignin.configure({
-      webClientId:
-        '861028011379-c5k1pk7lclf6isp6or1nh90o0r87tn2g.apps.googleusercontent.com',
-    });
-    await GoogleSignin.signOut();
-    const {idToken} = await GoogleSignin.signIn();
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    const {user, additionalUserInfo} = await auth().signInWithCredential(
-      googleCredential,
-    );
-    console.log(user.toJSON());
-    console.log(user.providerData[0].uid);
-    console.log(
-      additionalUserInfo?.isNewUser,
-      additionalUserInfo?.profile,
-      additionalUserInfo?.providerId,
-      additionalUserInfo?.username,
-    );
+  const authContext = useContext(AuthContext);
+  const [state, setState] = useState(initialState);
+
+  const onGoogleAuth = async () => {
+    setState({isLaoding: true, error: null});
+    googleSignin()
+      .then(user => {
+        authContext.setUser(user);
+        setState({isLaoding: false, error: null});
+      })
+      .catch(e => {
+        setState({isLaoding: false, error: e});
+      });
   };
 
   return (
     <View style={styles.drawerHeader}>
-      <Button title="Sign in" onPress={googleSignin} />
-      <Image
-        source={{
-          uri: 'https://images.radio.com/aiu-media/GettyImages1398214825-a38bd9ae-b827-4201-9915-c80f037ea53e.jpg?width=800',
-        }}
-        style={styles.profilePicture}
-      />
-      <VerticalSpace height={rsHeight(12)} />
-      <Text style={styles.userName}>Yousef hamza</Text>
+      {/* <Snackbar
+        style={{backgroundColor: COLORS.red}}
+        visible={state.error !== null}
+        duration={4000}
+        onDismiss={() => {
+          setState(prevState => {
+            return {...prevState, error: null};
+          });
+        }}>
+        {state.error}
+      </Snackbar> */}
+      {state.isLaoding && <ActivityIndicator color={COLORS.red} size="large" />}
+      {!authContext.user && !state.isLaoding && (
+        <>
+          <FacebookButton onPress={() => {}} />
+          <VerticalSpace height={rsHeight(16)} />
+          <GoogleButton onPress={onGoogleAuth} />
+        </>
+      )}
+      {authContext.user && !state.isLaoding && (
+        <>
+          <Image
+            source={{uri: authContext.user.image}}
+            style={styles.profilePicture}
+          />
+          <VerticalSpace height={rsHeight(12)} />
+          <Text style={styles.userName}>{authContext.user.name}</Text>
+        </>
+      )}
     </View>
   );
 };
