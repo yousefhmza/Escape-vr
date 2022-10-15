@@ -7,7 +7,10 @@ type props = {onPress: () => void; title: string};
 
 const AppButton = ({onPress, title}: props) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={onPress}
+      activeOpacity={0.7}>
       <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>
   );

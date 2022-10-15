@@ -1,25 +1,29 @@
-import {useContext} from 'react';
+import {RefObject} from 'react';
 import {Image, View} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {AuthContext} from '../../../stores/auth/auth-context';
 import {rsSize} from '../../../utils/responsive';
-import COLORS from '../../../values/colors';
 import {styles} from '../styles';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import Icon from 'react-native-vector-icons/Ionicons';
+import COLORS from '../../../values/colors';
+import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const ProfileImage = () => {
-  const authContext = useContext(AuthContext);
+type props = {
+  sheetRef: RefObject<BottomSheetMethods>;
+  image: string;
+};
+
+const ProfileImage = ({sheetRef, image}: props) => {
+  const openBottomSheet = () => sheetRef.current?.expand();
 
   return (
-    <View style={styles.profileImageContainer}>
-      <Image
-        source={{uri: authContext.user?.image}}
-        style={styles.profileImage}
-      />
-      <View style={styles.cameraIconContainer}>
-        <Icon name="camera" color={COLORS.primary} size={rsSize(18)} />
+    <TouchableOpacity onPress={openBottomSheet} activeOpacity={0.7}>
+      <View style={styles.profileImageContainer}>
+        <Image source={{uri: image}} style={styles.profileImage} />
+        <View style={styles.cameraIconContainer}>
+          <Icon name="camera" color={COLORS.primary} size={rsSize(18)} />
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

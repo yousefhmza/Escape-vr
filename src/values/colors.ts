@@ -6,6 +6,7 @@ const COLORS = {
   textGrey: '#575757',
   blue: '#485a96',
   white: '#ffffff',
+  black: '#000000',
 };
 
 export default COLORS;
