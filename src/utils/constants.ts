@@ -1,5 +1,5 @@
 const contactPhone: string = '+201069974143';
-const placeLocation = {lat: 30.0444, lng: 31.2357};
+const placeLocation = {lat: 30.314131310802654, lng: 31.314804315344375};
 
 export const firestoreCollections = {
   users: 'Users',

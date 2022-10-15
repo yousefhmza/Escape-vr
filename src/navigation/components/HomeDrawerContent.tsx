@@ -12,11 +12,16 @@ import {links} from '../../utils/constants';
 import {useContext} from 'react';
 import {AuthContext} from '../../stores/auth/auth-context';
 import {signout} from '../../services/firebase-services';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
+import {THomeDrawer} from '../navigators/HomeDrawer';
 
 const HomeDrawerContent = (props: DrawerContentComponentProps) => {
   const authContext = useContext(AuthContext);
+  const navigation = useNavigation();
   const authSignOut = () => {
     signout().then(() => {
+      navigation.goBack();
+      navigation.dispatch(DrawerActions.closeDrawer());
       authContext.setUser(null);
     });
   };
