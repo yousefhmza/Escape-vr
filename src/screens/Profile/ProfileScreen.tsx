@@ -15,18 +15,11 @@ const ProfileScreen = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [image, setImage] = useState<string>(authContext.user!.image);
 
-  const onCameraPressed = async () => {
-    const result = await launchCamera({mediaType: 'photo'});
+  const pickImage = async (camera: boolean) => {
+    const result = camera
+      ? await launchCamera({mediaType: 'photo', quality: 0.5})
+      : await launchImageLibrary({mediaType: 'photo'});
     if (result.assets) {
-      console.log(result.assets[0].uri!);
-      setImage(result.assets[0].uri!);
-    }
-  };
-
-  const onGalleryPressed = async () => {
-    const result = await launchImageLibrary({mediaType: 'photo'});
-    if (result.assets) {
-      console.log(result.assets[0].uri!);
       setImage(result.assets[0].uri!);
     }
   };
@@ -36,12 +29,12 @@ const ProfileScreen = () => {
       <ScrollView style={styles.profileScreen}>
         <ProfileImage sheetRef={bottomSheetRef} image={image} />
         <VerticalSpace height={rsHeight(16)} />
-        <ProfileForm />
+        <ProfileForm image={image} />
       </ScrollView>
       <ImagePickerBottomSheet
         sheetRef={bottomSheetRef}
-        onCameraPressed={onCameraPressed}
-        onGalleryPressed={onGalleryPressed}
+        onCameraPressed={() => pickImage(true)}
+        onGalleryPressed={() => pickImage(false)}
       />
     </View>
   );

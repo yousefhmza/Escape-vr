@@ -2,6 +2,7 @@ import {firestoreCollections, links, TUser} from '../utils/constants';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 export const googleSignin = async (): Promise<TUser> => {
   // Firebase auth
@@ -44,6 +45,28 @@ export const addUser = (user: TUser) => {
 
 export const getUser = (id: string) => {
   return firestore().collection(firestoreCollections.users).doc(id).get();
+};
+
+export const updateUser = async (user: TUser): Promise<TUser> => {
+  let url: string = '';
+  if (user.image.startsWith('file')) {
+    await storage().ref(`users/${user.id}`).putFile(user.image);
+    url = await storage().ref(`users/${user.id}`).getDownloadURL();
+  }
+  await firestore()
+    .collection(firestoreCollections.users)
+    .doc(user.id)
+    .update({
+      name: user.name.trim(),
+      image: url.length != 0 ? url : user.image,
+      phoneNumber: user.phoneNumber.trim(),
+    });
+  return {
+    id: user.id,
+    name: user.name.trim(),
+    image: url.length != 0 ? url : user.image,
+    phoneNumber: user.phoneNumber.trim(),
+  };
 };
 
 export const signout = () => auth().signOut();

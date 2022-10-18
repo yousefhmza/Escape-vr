@@ -1,10 +1,10 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useContext} from 'react';
+import {AuthContext} from '../../stores/auth/auth-context';
 import DrawerIcon from '../../components/atoms/DrawerIcon';
 import HomeScreen from '../../screens/Home';
 import PointsScreen from '../../screens/Points';
 import ProfileScreen from '../../screens/Profile/ProfileScreen';
-import {AuthContext} from '../../stores/auth/auth-context';
 import COLORS from '../../values/colors';
 import HomeDrawerContent from '../components/HomeDrawerContent';
 

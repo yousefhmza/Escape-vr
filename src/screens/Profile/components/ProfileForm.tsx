@@ -1,17 +1,44 @@
 import {Formik} from 'formik';
-import {useContext} from 'react';
-import {Button, TextInput} from 'react-native';
+import {useContext, useState} from 'react';
+import {ActivityIndicator, ToastAndroid} from 'react-native';
 import {VerticalSpace} from '../../../components/atoms/Spaces';
-import AppButton from '../../../components/molecules/AppButton';
-import TextField from '../../../components/molecules/TextField';
 import {AuthContext} from '../../../stores/auth/auth-context';
 import {rsHeight} from '../../../utils/responsive';
 import {profileValidationSchema} from '../../../utils/schemas';
+import {useNavigation} from '@react-navigation/native';
+import {updateUser} from '../../../services/firebase-services';
+import AppButton from '../../../components/molecules/AppButton';
+import TextField from '../../../components/molecules/TextField';
 import COLORS from '../../../values/colors';
-import {styles} from '../styles';
 
-const ProfileForm = () => {
+type TValues = {name: string; phoneNumber: string};
+type TState = {loading: boolean; error: string | null};
+type props = {image: string};
+
+const ProfileForm = ({image}: props) => {
+  const navigation = useNavigation();
   const authContext = useContext(AuthContext);
+  const [state, setState] = useState<TState>({loading: false, error: null});
+
+  const onSubmit = async (values: TValues) => {
+    setState({loading: true, error: null});
+    try {
+      const updatedUser = await updateUser({
+        id: authContext.user!.id,
+        name: values.name,
+        phoneNumber: values.phoneNumber,
+        image: image,
+      });
+      authContext.setUser(updatedUser);
+      setState({loading: false, error: null});
+      navigation.goBack();
+      ToastAndroid.show('You updated your profile successfully', 2000);
+    } catch (e) {
+      setState({loading: false, error: 'Error occurred'});
+      ToastAndroid.show(state.error!, 2000);
+    }
+  };
+
   return (
     <Formik
       initialValues={{
@@ -19,9 +46,7 @@ const ProfileForm = () => {
         phoneNumber: authContext.user!.phoneNumber,
       }}
       validationSchema={profileValidationSchema}
-      onSubmit={values => {
-        console.log(values);
-      }}>
+      onSubmit={onSubmit}>
       {({handleBlur, handleChange, handleSubmit, values, errors, touched}) => {
         return (
           <>
@@ -45,7 +70,11 @@ const ProfileForm = () => {
               error={errors.phoneNumber !== undefined && touched.phoneNumber}
             />
             <VerticalSpace height={rsHeight(16)} />
-            <AppButton title="Update profile" onPress={handleSubmit} />
+            {state.loading ? (
+              <ActivityIndicator color={COLORS.red} size="large" />
+            ) : (
+              <AppButton title="Update profile" onPress={handleSubmit} />
+            )}
           </>
         );
       }}
