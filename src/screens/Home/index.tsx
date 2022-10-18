@@ -1,18 +1,20 @@
-import {DrawerScreenProps} from '@react-navigation/drawer';
 import {Animated, ScrollView, View, Text} from 'react-native';
-import {THomeDrawer} from '../../navigation/navigators/HomeDrawer';
 import {VerticalSpace} from '../../components/atoms/Spaces';
+import {rsHeight, rsSize} from '../../utils/responsive';
+import {TAppStack} from '../../navigation/navigators/AppStack';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@react-navigation/native';
 import HomeAppbar from './components/HomeAppbar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HomeTile from './components/HomeTile';
 import styles from './styles';
 import HomePager from './components/HomePager';
 import COLORS from '../../values/colors';
-import {rsHeight, rsSize} from '../../utils/responsive';
 
-type props = DrawerScreenProps<THomeDrawer, 'Home'>;
+type props = NativeStackNavigationProp<TAppStack>;
 
-const HomeScreen = ({navigation}: props) => {
+const HomeScreen = () => {
+  const navigation = useNavigation<props>();
   let animatedHeaderValue = new Animated.Value(0);
   return (
     <View style={styles.screen}>
@@ -27,16 +29,26 @@ const HomeScreen = ({navigation}: props) => {
         <HomeTile
           title="Rooms"
           image={require('../../../assets/console.png')}
+          onPress={() => navigation.navigate('Rooms')}
         />
         <VerticalSpace height={rsHeight(16)} />
         <HomeTile
           title="PS services"
           image={require('../../../assets/playstation.png')}
+          onPress={() => {}}
         />
         <VerticalSpace height={rsHeight(16)} />
-        <HomeTile title="Drinks" image={require('../../../assets/drink.png')} />
+        <HomeTile
+          title="Drinks"
+          image={require('../../../assets/drink.png')}
+          onPress={() => {}}
+        />
         <VerticalSpace height={rsHeight(16)} />
-        <HomeTile title="Food" image={require('../../../assets/food.png')} />
+        <HomeTile
+          title="Food"
+          image={require('../../../assets/food.png')}
+          onPress={() => {}}
+        />
         <VerticalSpace height={rsHeight(16)} />
         <HomePager />
         <VerticalSpace height={rsHeight(16)} />
