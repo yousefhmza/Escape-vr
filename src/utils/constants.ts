@@ -3,6 +3,7 @@ const placeLocation = {lat: 30.313512, lng: 31.314728};
 
 export const firestoreCollections = {
   users: 'Users',
+  Rooms: 'Rooms',
 };
 
 export const links = {
@@ -18,4 +19,16 @@ export type TUser = {
   name: string;
   phoneNumber: string;
   image: string;
+};
+
+export type TRoom = {
+  id: string;
+  name: string;
+  image: string;
+};
+
+export type THttpState<T> = {
+  isLoading: boolean;
+  error: string | null;
+  data: T;
 };

@@ -1,14 +1,21 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import {rsHeight, rsRadius, rsSize} from '../../utils/responsive';
 import COLORS from '../../values/colors';
 
-type props = {onPress: () => void; title: string};
+type props = {onPress: () => void; title: string; style?: StyleProp<ViewStyle>};
 
-const AppButton = ({onPress, title}: props) => {
+const AppButton = ({onPress, title, style}: props) => {
   return (
     <TouchableOpacity
-      style={styles.button}
+      style={[styles.button, style]}
       onPress={onPress}
       activeOpacity={0.7}>
       <Text style={styles.title}>{title}</Text>
