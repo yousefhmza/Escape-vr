@@ -5,6 +5,7 @@ import RoomsScreen from '../../screens/Rooms/RoomsScreen/RoomsScreen';
 import SplashScreen from '../../screens/Splash';
 import COLORS from '../../values/colors';
 import HomeDrawer from './HomeDrawer';
+import RoomContextProvider from '../../stores/room/room-context';
 
 export type TAppStack = {
   Splash: undefined;
@@ -38,13 +39,17 @@ const AppStack = () => {
       />
       <Stack.Screen
         name="Room"
-        component={RoomScreen}
         options={({route}) => ({
           headerStyle: {backgroundColor: COLORS.red},
           headerTintColor: COLORS.white,
           title: route.params.room.name,
-        })}
-      />
+        })}>
+        {({route, navigation}) => (
+          <RoomContextProvider>
+            <RoomScreen navigation={navigation} route={route}></RoomScreen>
+          </RoomContextProvider>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };

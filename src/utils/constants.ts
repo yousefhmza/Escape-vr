@@ -4,6 +4,9 @@ const placeLocation = {lat: 30.313512, lng: 31.314728};
 export const firestoreCollections = {
   users: 'Users',
   Rooms: 'Rooms',
+  Dates: 'Dates',
+  Reservations: 'Reservations',
+  currentReservators: 'currentReservators',
 };
 
 export const links = {
@@ -31,4 +34,11 @@ export type THttpState<T> = {
   isLoading: boolean;
   error: string | null;
   data: T;
+};
+
+export type TReservation = {
+  id?: string;
+  clientId: string;
+  from: string;
+  to: string;
 };

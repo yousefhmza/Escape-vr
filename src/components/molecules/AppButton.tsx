@@ -4,19 +4,31 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableOpacityProps,
   View,
   ViewStyle,
 } from 'react-native';
 import {rsHeight, rsRadius, rsSize} from '../../utils/responsive';
 import COLORS from '../../values/colors';
 
-type props = {onPress: () => void; title: string; style?: StyleProp<ViewStyle>};
+type TProps = {
+  onPress: () => void;
+  title: string;
+  disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
+};
 
-const AppButton = ({onPress, title, style}: props) => {
+const AppButton = ({
+  onPress,
+  title,
+  style,
+  disabled,
+}: TProps & TouchableOpacityProps) => {
   return (
     <TouchableOpacity
       style={[styles.button, style]}
       onPress={onPress}
+      disabled={disabled}
       activeOpacity={0.7}>
       <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>

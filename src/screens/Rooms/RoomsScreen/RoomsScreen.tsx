@@ -19,7 +19,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import ErrorComponent from '../../../components/organisms/ErrorComponent';
 import firestore from '@react-native-firebase/firestore';
 import COLORS from '../../../values/colors';
-import firebase from '@react-native-firebase/app';
 
 type TProps = NativeStackScreenProps<TAppStack>;
 
