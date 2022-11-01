@@ -7,7 +7,8 @@ const COLORS = {
   blue: '#485a96',
   white: '#ffffff',
   black: '#000000',
-  green: 'green',
+  green: '#64da5c',
+  amber: '#ffcc40',
 };
 
 export default COLORS;

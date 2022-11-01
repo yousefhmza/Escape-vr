@@ -1,7 +1,7 @@
 import styles from './styles';
 import auth from '@react-native-firebase/auth';
 import {View, Image} from 'react-native';
-import {useEffect, useContext, useCallback} from 'react';
+import {useEffect, useContext} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {TAppStack} from '../../navigation/navigators/AppStack';
 import {links, TUser} from '../../utils/constants';
@@ -18,22 +18,22 @@ const SplashScreen = ({navigation}: props) => {
       if (firebaseUser) {
         getUser(firebaseUser.uid).then(snapshot => {
           if (snapshot.exists) {
-            console.log("exists");
             const user: TUser = {
               id: snapshot.data()!.id,
               name: snapshot.data()!.name,
               image: snapshot.data()!.image,
               phoneNumber: snapshot.data()!.phoneNumber,
+              points: snapshot.data()!.points,
             };
             authContext.setUser(user);
             navigation.replace('HomeNavigator');
           } else {
-            console.log("created");
             const user: TUser = {
               id: firebaseUser.uid,
               name: firebaseUser.displayName!,
               image: links.defaultProfileImgUrl,
               phoneNumber: '',
+              points: 0,
             };
             addUser(user).then(() => {
               authContext.setUser(user);
@@ -51,10 +51,7 @@ const SplashScreen = ({navigation}: props) => {
   return (
     <View style={styles.screen}>
       <View style={styles.circle}>
-        <Image
-          style={styles.logo}
-          source={require('../../../assets/logo.png')}
-        />
+        <Image style={styles.logo} source={require('../../../assets/logo.png')} />
       </View>
     </View>
   );

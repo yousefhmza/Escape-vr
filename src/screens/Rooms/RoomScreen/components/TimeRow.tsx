@@ -4,7 +4,6 @@ import {rsSize, rsWidth} from '../../../../utils/responsive';
 import {RoomContext} from '../../../../stores/room/room-context';
 import {
   addMinutes,
-  endOfDay,
   formatTime,
   getTimeByMinutes,
   getTimeFromDate,
@@ -28,50 +27,28 @@ const TimeRow = (props: TProps) => {
   const authcontext = useContext(AuthContext);
 
   const startTimehandler = (date: Date) => {
-    const reservation = {
-      clientId: authcontext.user!.id,
-      from: getTimeFromDate(date),
-      to: '',
-    };
-    roomDispatch({
-      type: TRoomActions.SetReservationAction,
-      payload: {reservation: reservation},
-    });
+    const reservation = {clientId: authcontext.user!.id, from: getTimeFromDate(date), to: ''};
+    roomDispatch({type: TRoomActions.SetReservationAction, payload: {reservation: reservation}});
   };
 
   const finishTimehandler = (date: Date) => {
-    const reservation = {
-      ...roomState.reservation,
-      to: getTimeFromDate(date),
-    };
+    const reservation = {...roomState.reservation, to: getTimeFromDate(date)};
 
-    if (
-      getTimeByMinutes(reservation.to) <= getTimeByMinutes(reservation.from)
-    ) {
-      ToastAndroid.show(
-        'Your finish time should be after your start time !!',
-        2000,
-      );
+    if (getTimeByMinutes(reservation.to) <= getTimeByMinutes(reservation.from)) {
+      ToastAndroid.show('Your finish time should be after your start time !!', 2000);
       return;
     }
 
-    const isSelectedPeriodAvailable = isPeriodAvailable(
-      reservation.from,
-      reservation.to,
-      roomState.reservations!,
-    );
+    const isSelectedPeriodAvailable = isPeriodAvailable(reservation.from, reservation.to, roomState.reservations!);
     if (!isSelectedPeriodAvailable) {
       ToastAndroid.show(
         'There is an already reserved period inside your period, Please take a look on already reserved periods!!',
-        5000,
+        4000,
       );
       return;
     }
 
-    roomDispatch({
-      type: TRoomActions.SetReservationAction,
-      payload: {reservation: reservation},
-    });
+    roomDispatch({type: TRoomActions.SetReservationAction, payload: {reservation: reservation}});
   };
 
   return (
@@ -80,14 +57,7 @@ const TimeRow = (props: TProps) => {
         modal
         mode="time"
         open={isOpen}
-        date={
-          props.startTime
-            ? new Date()
-            : addMinutes(
-                new Date(),
-                getTimeByMinutes(roomState.reservation.from),
-              )
-        }
+        date={props.startTime ? new Date() : addMinutes(new Date(), getTimeByMinutes(roomState.reservation.from))}
         onConfirm={date => {
           setIsOpen(false);
           const isSelectedTimeAvailable = isTimeAvailable(
@@ -95,10 +65,7 @@ const TimeRow = (props: TProps) => {
             roomState.reservations!,
           );
           if (!isSelectedTimeAvailable) {
-            ToastAndroid.show(
-              'This time is unavailable,  please Choose another time !!',
-              2000,
-            );
+            ToastAndroid.show('This time is unavailable,  please Choose another time !!', 4000);
             return;
           }
 
@@ -111,9 +78,7 @@ const TimeRow = (props: TProps) => {
         onCancel={() => setIsOpen(false)}
       />
       <Text style={styles.date}>
-        {props.startTime
-          ? formatTime(roomState.reservation.from)
-          : formatTime(roomState.reservation.to)}
+        {props.startTime ? formatTime(roomState.reservation.from) : formatTime(roomState.reservation.to)}
       </Text>
       <AppButton
         disabled={roomState.reservations === null}
@@ -128,19 +93,7 @@ const TimeRow = (props: TProps) => {
 export default TimeRow;
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-  },
-  date: {
-    color: COLORS.white,
-    fontSize: rsSize(16),
-    fontWeight: '700',
-    flex: 1,
-  },
-  button: {
-    paddingHorizontal: rsWidth(16),
-    marginStart: rsWidth(8),
-  },
+  row: {flexDirection: 'row', alignItems: 'center', width: '100%'},
+  date: {color: COLORS.white, fontSize: rsSize(16), fontWeight: '700', flex: 1},
+  button: {paddingHorizontal: rsWidth(16), marginStart: rsWidth(8)},
 });

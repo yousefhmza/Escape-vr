@@ -28,6 +28,7 @@ const ProfileForm = ({image}: props) => {
         name: values.name,
         phoneNumber: values.phoneNumber,
         image: image,
+        points: authContext.user!.points,
       });
       authContext.setUser(updatedUser);
       setState({loading: false, error: null});

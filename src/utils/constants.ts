@@ -22,6 +22,7 @@ export type TUser = {
   name: string;
   phoneNumber: string;
   image: string;
+  points: number;
 };
 
 export type TRoom = {

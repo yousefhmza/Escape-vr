@@ -7,15 +7,8 @@ import {rsHeight} from '../../../utils/responsive';
 import {RoomContext} from '../../../stores/room/room-context';
 import {useContext, useCallback, useEffect} from 'react';
 import {TRoomActions} from '../../../stores/room/room-reducer';
-import {
-  addReservation,
-  getreservations,
-} from '../../../services/firebase-services';
-import {
-  getTimeByMinutes,
-  isPeriodAvailable,
-  isTimeAvailable,
-} from '../../../utils/date-handler';
+import {addReservation, getreservations} from '../../../services/firebase-services';
+import {getTimeByMinutes, isPeriodAvailable, isTimeAvailable} from '../../../utils/date-handler';
 import DateRow from './components/DateRow';
 import TimeRow from './components/TimeRow';
 import AppButton from '../../../components/molecules/AppButton';
@@ -24,96 +17,53 @@ import COLORS from '../../../values/colors';
 
 type TProps = NativeStackScreenProps<TAppStack, 'Room'>;
 
-const RoomScreen = ({route}: TProps) => {
+const RoomScreen = ({route, navigation}: TProps) => {
   const {roomState, roomDispatch} = useContext(RoomContext);
 
   const getReservations = useCallback(async (date: Date) => {
-    roomDispatch({
-      type: TRoomActions.GetReservationsLoadingAction,
-      payload: {date: date},
-    });
+    roomDispatch({type: TRoomActions.GetReservationsLoadingAction, payload: {date: date}});
     const result = await getreservations(route.params.room.id, date);
     if (result instanceof Error) {
-      roomDispatch({
-        type: TRoomActions.GetReservationsFailureAction,
-        payload: {error: result.message, date: date},
-      });
+      roomDispatch({type: TRoomActions.GetReservationsFailureAction, payload: {error: result.message, date: date}});
     }
     if (typeof result == 'object') {
-      roomDispatch({
-        type: TRoomActions.GetReservationsSuccessAction,
-        payload: {reservations: result, date: date},
-      });
+      roomDispatch({type: TRoomActions.GetReservationsSuccessAction, payload: {reservations: result, date: date}});
     }
   }, []);
 
   const addReservationHandler = async () => {
-    if (
-      roomState.reservation.from.length == 0 ||
-      roomState.reservation.to.length == 0
-    ) {
-      ToastAndroid.show('Please choose start time and finish time !!', 2000);
+    if (roomState.reservation.from.length == 0 || roomState.reservation.to.length == 0) {
+      ToastAndroid.show('Please choose start time and finish time !!', 4000);
       return;
     }
-    if (
-      getTimeByMinutes(roomState.reservation.to) -
-        getTimeByMinutes(roomState.reservation.from) <
-      60
-    ) {
-      ToastAndroid.show("You can't reserve less than an hour !!", 2000);
+    if (getTimeByMinutes(roomState.reservation.to) - getTimeByMinutes(roomState.reservation.from) < 60) {
+      ToastAndroid.show("You can't reserve less than an hour !!", 4000);
       return;
     }
 
     await getReservations(roomState.date);
-    const isSelectedFromAvailable = isTimeAvailable(
-      roomState.reservation.from,
-      roomState.reservations!,
-    );
-    const isSelectedToAvailable = isTimeAvailable(
-      roomState.reservation.to,
-      roomState.reservations!,
-    );
+    const isSelectedFromAvailable = isTimeAvailable(roomState.reservation.from, roomState.reservations!);
+    const isSelectedToAvailable = isTimeAvailable(roomState.reservation.to, roomState.reservations!);
     const isSelectedPeriodAvailable = isPeriodAvailable(
       roomState.reservation.from,
       roomState.reservation.to,
       roomState.reservations!,
     );
-    if (
-      !(
-        isSelectedFromAvailable &&
-        isSelectedToAvailable &&
-        isSelectedPeriodAvailable
-      )
-    ) {
-      ToastAndroid.show(
-        'Please recheck your time and already reserved times',
-        2000,
-      );
+    if (!(isSelectedFromAvailable && isSelectedToAvailable && isSelectedPeriodAvailable)) {
+      ToastAndroid.show('Please recheck your time and already reserved times', 4000);
       return;
     }
 
-    roomDispatch({
-      type: TRoomActions.AddReservationLoadingAction,
-      payload: {},
-    });
-    const result = await addReservation(
-      route.params.room.id,
-      roomState.date,
-      roomState.reservation,
-    );
+    roomDispatch({type: TRoomActions.AddReservationLoadingAction, payload: {}});
+    const result = await addReservation(route.params.room.id, roomState.date, roomState.reservation);
     if (result instanceof Error) {
-      ToastAndroid.show(result.message, 2000);
-      roomDispatch({
-        type: TRoomActions.AddReservationFailureAction,
-        payload: {error: result.message},
-      });
+      ToastAndroid.show(result.message, 4000);
+      roomDispatch({type: TRoomActions.AddReservationFailureAction, payload: {error: result.message}});
     }
     if (typeof result == 'string') {
-      ToastAndroid.show(result, 2000);
-      roomDispatch({
-        type: TRoomActions.AddReservationSuccessAction,
-        payload: {},
-      });
+      ToastAndroid.show(result, 4000);
+      roomDispatch({type: TRoomActions.AddReservationSuccessAction, payload: {}});
+      navigation.popToTop();
     }
   };
 
@@ -138,11 +88,7 @@ const RoomScreen = ({route}: TProps) => {
       {roomState.addingReservation ? (
         <ActivityIndicator color={COLORS.red} size="large" />
       ) : (
-        <AppButton
-          title="Confirm"
-          onPress={addReservationHandler}
-          style={styles.confirmButton}
-        />
+        <AppButton title="Confirm" onPress={addReservationHandler} style={styles.confirmButton} />
       )}
     </View>
   );

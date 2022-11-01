@@ -1,17 +1,6 @@
 import {useEffect, useState, useCallback} from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  firestoreCollections,
-  THttpState,
-  TRoom,
-} from '../../../utils/constants';
+import {View, Text, ImageBackground, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
+import {firestoreCollections, THttpState, TRoom} from '../../../utils/constants';
 import {styles} from './styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {TAppStack} from '../../../navigation/navigators/AppStack';
@@ -38,7 +27,7 @@ const RoomsScreen = ({navigation}: TProps) => {
     const docs = await firestore()
       .collection(firestoreCollections.Rooms)
       .get()
-      .then(snapshot => {        
+      .then(snapshot => {
         const rooms: TRoom[] = snapshot.docs.map(doc => ({
           id: doc.data().id,
           name: doc.data().name,
@@ -74,10 +63,7 @@ const RoomsScreen = ({navigation}: TProps) => {
   if (state.error) {
     return (
       <View style={styles.roomsScreen}>
-        <ErrorComponent
-          errorText="Hello to this error and we should stand toghther to stop this war"
-          onRetry={() => getRooms()}
-        />
+        <ErrorComponent errorText={state.error} onRetry={() => getRooms()} />
       </View>
     );
   }

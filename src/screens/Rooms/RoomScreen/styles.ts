@@ -25,6 +25,10 @@ export const styles = StyleSheet.create({
     fontSize: rsSize(16),
     marginBottom: rsHeight(16),
   },
-  reservationsWarning: {color: COLORS.red, textAlign: 'center'},
+  reservationsWarningContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   confirmButton: {width: '100%'},
 });

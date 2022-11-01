@@ -43,6 +43,9 @@ const HomeDrawer = () => {
           options={{
             drawerLabel: 'Your points',
             drawerIcon: props => <DrawerIcon name="star-half" {...props} />,
+            headerStyle: {backgroundColor: COLORS.red},
+            headerTintColor: COLORS.white,
+            unmountOnBlur: true,
           }}
         />
       )}
@@ -55,9 +58,7 @@ const HomeDrawer = () => {
             headerTintColor: COLORS.white,
             drawerLabel: 'Profile',
             unmountOnBlur: true,
-            drawerIcon: props => (
-              <DrawerIcon name="person-circle-outline" {...props} />
-            ),
+            drawerIcon: props => <DrawerIcon name="person-circle-outline" {...props} />,
           }}
         />
       )}

@@ -1,9 +1,4 @@
-import {
-  firestoreCollections,
-  links,
-  TReservation,
-  TUser,
-} from '../utils/constants';
+import {firestoreCollections, links, TReservation, TUser} from '../utils/constants';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {getFirebaseDateFormat} from '../utils/date-handler';
 import auth from '@react-native-firebase/auth';
@@ -13,8 +8,7 @@ import storage from '@react-native-firebase/storage';
 export const googleSignin = async (): Promise<TUser> => {
   // Firebase auth
   GoogleSignin.configure({
-    webClientId:
-      '861028011379-c5k1pk7lclf6isp6or1nh90o0r87tn2g.apps.googleusercontent.com',
+    webClientId: '861028011379-c5k1pk7lclf6isp6or1nh90o0r87tn2g.apps.googleusercontent.com',
   });
   await GoogleSignin.signOut();
   const {idToken} = await GoogleSignin.signIn();
@@ -29,6 +23,7 @@ export const googleSignin = async (): Promise<TUser> => {
       name: snapshot.data()!.name,
       image: snapshot.data()!.image,
       phoneNumber: snapshot.data()!.phoneNumber,
+      points: snapshot.data()!.points,
     };
     return user;
   }
@@ -37,16 +32,14 @@ export const googleSignin = async (): Promise<TUser> => {
     name: firebaseUser.providerData[0].displayName!,
     image: links.defaultProfileImgUrl,
     phoneNumber: '',
+    points: 0,
   };
   await addUser(user);
   return user;
 };
 
 export const addUser = (user: TUser) => {
-  return firestore()
-    .collection(firestoreCollections.users)
-    .doc(user.id)
-    .set(user);
+  return firestore().collection(firestoreCollections.users).doc(user.id).set(user);
 };
 
 export const getUser = (id: string) => {
@@ -72,15 +65,13 @@ export const updateUser = async (user: TUser): Promise<TUser> => {
     name: user.name.trim(),
     image: url.length != 0 ? url : user.image,
     phoneNumber: user.phoneNumber.trim(),
+    points: user.points,
   };
 };
 
 export const signout = () => auth().signOut();
 
-export const getreservations = async (
-  roomId: string,
-  date: Date,
-): Promise<Error | TReservation[]> => {
+export const getreservations = async (roomId: string, date: Date): Promise<Error | TReservation[]> => {
   try {
     const snapshot = await firestore()
       .collection(firestoreCollections.Rooms)
@@ -95,9 +86,7 @@ export const getreservations = async (
       from: doc.data().from,
       to: doc.data().to,
     }));
-    const res = reservations.sort(
-      (a, b) => +a.from.split(':')[0] - +b.from.split(':')[0],
-    );
+    const res = reservations.sort((a, b) => +a.from.split(':')[0] - +b.from.split(':')[0]);
     return res;
   } catch (e: any) {
     return Error(e.message);
@@ -124,20 +113,15 @@ export const addReservation = async (
       .collection(firestoreCollections.Reservations)
       .add(reservation);
     // Add the user to the list of currentReservators so that he can't reserve twice
-    await firestore()
-      .collection(firestoreCollections.currentReservators)
-      .doc(reservation.clientId)
-      .set({});
+    await firestore().collection(firestoreCollections.currentReservators).doc(reservation.clientId).set({});
     return 'Your reservation is placed successfully';
   } catch (e: any) {
     return Error(e.message);
   }
 };
 
-const getCurrentReservators = async (): Promise<string[]> => {
-  const snapshot = await firestore()
-    .collection(firestoreCollections.currentReservators)
-    .get();
+export const getCurrentReservators = async (): Promise<string[]> => {
+  const snapshot = await firestore().collection(firestoreCollections.currentReservators).get();
   const currentReservators = snapshot.docs.map(doc => doc.id);
   return currentReservators;
 };
